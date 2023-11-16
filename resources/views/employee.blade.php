@@ -287,24 +287,31 @@
                     <div class="form-group">
                         <label>Name</label>
                         <input type="text" id="name_input" name="name" class="form-control" required>
-                        <div class="clearfix"></div>
+						<span class="error" id="uname_err"> </span>
+                        
                     </div>
                     <div class="form-group">
                         <label>Email</label>
                         <input type="email" id="email_input" name="email" class="form-control" required>
+						<span class="error" id="email_err"> </span>
+
                     </div>
                     <div class="form-group">
                         <label>Address</label>
                         <textarea class="form-control" id="address_input" name="address" required></textarea>
+						<span class="error" id="address_err"> </span>
+
                     </div>
                     <div class="form-group">
                         <label>Phone</label>
                         <input type="text" id="phone_input" name="phone" class="form-control" required>
+						<span class="error" id="phone_err"> </span>
+
                     </div>
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                    <input type="submit" class="btn btn-success" value="Add" onclick="addEmployee()">
+                    <input type="submit" class="btn btn-success submit" value="Add" >
                 </div>
                 </form>
             </div>
@@ -404,28 +411,28 @@
 
 
     <script>
-        $("#validation").validate({
-            rules: {
-                name:{
-                    required:true
-                },
-                email:{
-                    required:true
-                },
-                address:{
-                    required:true
-                },
-                phone:{
-                    required:true
-                },
-            },
-                messages: {
-                    name:  "Please input full name*",
-                    email:"Please input email address*",
-                    address:"Please input address*",
-                    phone:"Please input phone number*",
-                }
-            });
+        // $("#validation").validate({
+        //     rules: {
+        //         name:{
+        //             required:true
+        //         },
+        //         email:{
+        //             required:true
+        //         },
+        //         address:{
+        //             required:true
+        //         },
+        //         phone:{
+        //             required:true
+        //         },
+        //     },
+        //         messages: {
+        //             name:  "Please input full name*",
+        //             email:"Please input email address*",
+        //             address:"Please input address*",
+        //             phone:"Please input phone number*",
+        //         }
+        //     });
 
     </script>
     <script>
@@ -473,12 +480,36 @@
                 }
             });
         }
+        $(document).ready(function() {
+        $(".submit").click(function(e){
+            e.preventDefault();
 
-        function addEmployee() {
+            $('#name_input').on('input',function(){
+			checkuser();
+		    })
+            $('#email_input').on('input',function(){
+			checkemail();
+            })
+            $('#phone_input').on('input',function(){
+                checktele();
+            })
+            $('#address_input').on('input',function(){
+                checkaddress();
+            })
+
             var name = $('.add_epmployee #name_input').val();
             var email = $('.add_epmployee #email_input').val();
             var phone = $('.add_epmployee #phone_input').val();
             var address = $('.add_epmployee #address_input').val();
+
+            if (!checkuser() && !checkemail() && !checktele() && !checkaddress() ) {
+            console.log("er1");
+            $("#message").html(`<div class="alert alert-warning">Please fill all required field</div>`);
+			} else if (!checkuser() || !checkemail() || !checktele() || !checkaddress()  ) {
+				$("#message").html(`<div class="alert alert-warning">Please fill all required field</div>`);
+				console.log("er");
+			}
+			else {
 
             $.ajax({
                 type: 'post',
@@ -491,13 +522,29 @@
                 },
                 url: "{{ url('employee-add') }}",
                 success: function(response) {
+                    // res = JSON.parse(res);
+                    //   if (res.status == "ok")
+                    //   {
+                    //     alert(response.message);
+
+                    //       window.location.reload();
+                    //   }
+                    //   else if (res.status == "error")
+                    //   {
+                    //       alert(res.msg);
+                    //   }
+                    $("#name_input").val("");
+                    $("#email_input").val("");
+                    $("#phone_input").val("");
+                    $("#address_input").val("");
                     $('#addEmployeeModal').modal('hide');
                     employeeList();
                     alert(response.message);
+                    window.location.reload()
                 }
 
             })
-        }
+        }})});
 
         function editEmployee() {
             var name = $('.edit_employee #name_input').val();
@@ -563,6 +610,84 @@
                 }
             })
         }
+
+
+
+        function checkuser() {
+		var pattern = /^[A-Za-z/. ]+$/;
+		var user = $('#name_input').val();
+		var validuser = pattern.test(user);
+		if($('#name_input').val().length == 0) {
+			$('#uname_err').html('*Username  is empty');
+			return false;
+		}else if ($('#name_input').val().length < 4) {
+			$('#uname_err').html('*Username length is too short');
+			return false;
+		} else if (!validuser) {
+			$('#uname_err').html('*Invalid symbole');
+			return false;
+		} else {
+			$('#uname_err').html('');
+			return true;
+		}
+	}
+
+    function checkemail() {
+		var pattern = /^[A-Za-z-@/. ]+$/;
+		var user = $('#email_input').val();
+		var validuser = pattern.test(user);
+		if($('#email_input').val().length == 0) {
+			$('#email_err').html('*email  is empty');
+			return false;
+		}else if ($('#email_input').val().length < 4) {
+			$('#email_err').html('*Username length is too short');
+			return false;
+		} else if (!validuser) {
+			$('#email_err').html('*Invalid symbole');
+			return false;
+		} else {
+			$('#email_err').html('');
+			return true;
+		}
+    }
+
+    function checkaddress() {
+		var pattern = /^[A-Za-z/. ]+$/;
+		var user = $('#address_input').val();
+		var validuser = pattern.test(user);
+		if($('#address_input').val().length == 0) {
+			$('#address_err').html('*Address  is empty');
+			return false;
+		}else if ($('#address_input').val().length < 4) {
+			$('#address_err').html('*Address length is too short');
+			return false;
+		} else if (!validuser) {
+			$('#address_err').html('*Invalid symbole');
+			return false;
+		} else {
+			$('#address_err').html('');
+			return true;
+		}
+	}
+
+	function checktele() {
+		var pattern = /^(?:0|94|\+94|0094)?(?:(11|21|23|24|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|63|65|66|67|81|91)(0|2|3|4|5|7|9)|7(0|1|2|4|5|6|7|8)\d)\d{6}$/;
+		var tele = $('#phone_input').val();
+		var validtele = pattern.test(tele);
+		if($('#phone_input').val().length == 0) {
+			$('#phone_err').html('*Mobile number is empty');
+			return false;
+		}else if ($('#phone_input').val().length !== 10 && $('#phone_input').val().length !== 12) {
+			$('#phone_err').html('*Invalid Mobile Number');
+			return false;
+		} else if (!validtele) {
+			$('#phone_err').html('*Invalid Mobile Numberr');
+			return false;
+		} else {
+			$('#phone_err').html('');
+			return true;
+		}
+	}
     </script>
 
 </body>
