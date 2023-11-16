@@ -411,29 +411,7 @@
 
 
     <script>
-        // $("#validation").validate({
-        //     rules: {
-        //         name:{
-        //             required:true
-        //         },
-        //         email:{
-        //             required:true
-        //         },
-        //         address:{
-        //             required:true
-        //         },
-        //         phone:{
-        //             required:true
-        //         },
-        //     },
-        //         messages: {
-        //             name:  "Please input full name*",
-        //             email:"Please input email address*",
-        //             address:"Please input address*",
-        //             phone:"Please input phone number*",
-        //         }
-        //     });
-
+        
     </script>
     <script>
         $(document).ready(function() {
@@ -522,17 +500,7 @@
                 },
                 url: "{{ url('employee-add') }}",
                 success: function(response) {
-                    // res = JSON.parse(res);
-                    //   if (res.status == "ok")
-                    //   {
-                    //     alert(response.message);
-
-                    //       window.location.reload();
-                    //   }
-                    //   else if (res.status == "error")
-                    //   {
-                    //       alert(res.msg);
-                    //   }
+                    
                     $("#name_input").val("");
                     $("#email_input").val("");
                     $("#phone_input").val("");
